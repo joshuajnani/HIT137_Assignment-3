@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog
 #Create the main application window
 root = tk.Tk()
 root.title("Basic Tkinter GUI") # Set the window title
@@ -9,7 +10,16 @@ Tabs = ttk.Notebook(root)
 
 #TAB1
 tab1 = ttk.Frame(Tabs)
+#File selector
+filepath = "None"
+def openFile():
+        filepath = filedialog.askopenfilename()
+        label1.config(text = filepath)
+button = tk.Button(tab1, text = "Open File", command=openFile)
+button.pack(pady=20)
 #Dropdown menu for input type
+label1 = ttk.Label(tab1, text = filepath)
+label1.pack(pady=20)
 label = ttk.Label(tab1, text = 'Choose input type:')
 label.pack(pady=20)
 inputChoice = ['Text','Audio','Image','Video']
@@ -22,20 +32,24 @@ aiChoice = ['TO','BE','ADDED','LATER']
 dropdownAI = ttk.Combobox(tab1,values=aiChoice)
 dropdownAI.pack()
 #Function to retrieve choices after a button is pressed
-def my_button_action():    
+def confirm_button_action():    
         type = dropdownChoice.get()
         ai = dropdownAI.get()
 #Button to confirm choice and proceed
-button = tk.Button(tab1, text = "Confirm", command=my_button_action)
+button = tk.Button(tab1, text = "Confirm", command=confirm_button_action)
 button.pack(pady=20)
 
 #TAB2
 tab2 = ttk.Frame(Tabs)
 label = ttk.Label(tab2, text = 'Explaination of OOP')
 label.pack(pady=20)
+label = ttk.Label(tab2, text = 'insert text here')
+label.pack(pady=20)
 #TAB3
 tab3 = ttk.Frame(Tabs)
 label = ttk.Label(tab3, text = 'Choice of AI Models')
+label.pack(pady=20)
+label = ttk.Label(tab3, text = 'insert text here')
 label.pack(pady=20)
 
 Tabs.add(tab1, text ='Tab 1')

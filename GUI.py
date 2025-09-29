@@ -91,15 +91,19 @@ button.pack(pady=20)
 
 #TAB2
 tab2 = ttk.Frame(Tabs)
-label = ttk.Label(tab2, text = 'Explaination of OOP')
+with open("OOP.txt", "r") as file:
+        oop = file.read()
+label = ttk.Label(tab2, text = "Explaination of OOP")
 label.pack(pady=20)
-label = ttk.Label(tab2, text = 'insert text here')
+label = ttk.Label(tab2, text = oop)
 label.pack(pady=20)
 #TAB3
 tab3 = ttk.Frame(Tabs)
+with open("AI_Models.txt", "r") as file:
+        aiModels = file.read()
 label = ttk.Label(tab3, text = 'Choice of AI Models')
 label.pack(pady=20)
-label = ttk.Label(tab3, text = 'insert text here')
+label = ttk.Label(tab3, text = aiModels)
 label.pack(pady=20)
 
 Tabs.add(tab1, text ='Tab 1')

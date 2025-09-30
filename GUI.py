@@ -11,10 +11,10 @@ Tabs = ttk.Notebook(root)
 
 #TAB1
 tab1 = ttk.Frame(Tabs)
-#Dropdown menu for input type
 label = ttk.Label(tab1, text = 'Choose input type:')
 label.pack(pady=20)
 inputChoice = ['Text','Image']
+#Dropdown menu for input type
 dropdownChoice = ttk.Combobox(tab1,values=inputChoice)
 dropdownChoice.pack()
 
@@ -45,9 +45,12 @@ def inputSelector():
 #Button to confirm choice for input type
 button = tk.Button(tab1, text = "Confirm", command = inputSelector)
 button.pack()
+
 #File selector
 filepath = None
+#Function to open window to browse folders
 def openFile():
+        global filepath
         filepath = filedialog.askopenfilename()
         label1.config(text = filepath)
 label1 = ttk.Label(tab1, text = filepath)
@@ -62,13 +65,15 @@ dropdownAI.pack()
 backRemove=None
 textImage=None
 image1=None
+#Function for selecting AI output, stopping using image in "Text to Image"
+#Kept 2 options incase out put for models differ
 def AI_Selector():
         global backRemove, textImage, image1
         aiSelect = dropdownAI.get()
         if aiSelect == "Text to Image":
-                if backRemove is not None and backRemove.winfo_exists(): #Destroy other widget on clicking confirm, if it exists
+                if backRemove is not None and backRemove.winfo_exists(): 
                         destroyer(backRemove)
-                if textImage is None or not textImage.winfo_exists(): #Create widget if there current widget doesn't exists
+                if textImage is None or not textImage.winfo_exists(): 
                         image1 = tk.PhotoImage(file = "output.png")
                         textImage = tk.Label(tab1, image=image1)
                         textImage.pack()
@@ -91,7 +96,7 @@ button.pack(pady=20)
 
 #TAB2
 tab2 = ttk.Frame(Tabs)
-with open("OOP.txt", "r") as file:
+with open("OOP.txt", "r") as file: #Read in OOP.txt file
         oop = file.read()
 label = ttk.Label(tab2, text = "Explaination of OOP")
 label.pack(pady=20)
@@ -99,9 +104,9 @@ label = ttk.Label(tab2, text = oop)
 label.pack(pady=20)
 #TAB3
 tab3 = ttk.Frame(Tabs)
-with open("AI_Models.txt", "r") as file:
-        aiModels = file.read()
-label = ttk.Label(tab3, text = 'Choice of AI Models')
+with open("AI_Models.txt", "r") as file: #Read in AI_Models.txt file
+        aiModels = file.read() 
+label = ttk.Label(tab3, text = 'Choice of AI Models') 
 label.pack(pady=20)
 label = ttk.Label(tab3, text = aiModels)
 label.pack(pady=20)

@@ -1,11 +1,15 @@
-from transformers import pipeline
-from PIL import Image
 import tkinter as tk
 from tkinter import ttk, filedialog
+from transformers import pipeline
+# Import Python Imaging Library for image manipulation and saving
+from PIL import Image
+# Import text to image generation class
 from text_to_image import TextToImageGenerator
+# Import background remover loader function
+from background_remover import load_background_remover
+pipe = load_background_remover()
 
 # Initialize background remover pipeline
-pipe = pipeline("image-segmentation", model="briaai/RMBG-1.4", trust_remote_code=True)
 
 # Create the main application window
 root = tk.Tk()
@@ -83,28 +87,39 @@ def AI_Selector():
     aiSelect = dropdownAI.get()
     inputType = dropdownChoice.get()
 
+    # Text to image generation
     if aiSelect == "Text to Image" and inputType == "Text":
+        # Remove the background remover image if it exists
         if backRemove is not None and backRemove.winfo_exists():
             destroyer(backRemove)
+        # Check if the text input box exists and retrieve the prompt
         if textBox is not None and textBox.winfo_exists():
             prompt = textBox.get("1.0", tk.END).strip()
+            # Continue if the prompt is not empty
             if prompt:
                 generator = TextToImageGenerator()
                 output_path = generator.generate_image(prompt)
+                # Display the generated image if it's not already shown
                 if textImage is None or not textImage.winfo_exists():
                     image1 = tk.PhotoImage(file=output_path)
                     textImage = tk.Label(tab1, image=image1)
                     textImage.image = image1
                     textImage.pack()
-
+    # Image background removal
     elif aiSelect == "Background Remover" and inputType == "Image":
+        # Remove the generated image from text to image, if it exists
         if textImage is not None and textImage.winfo_exists():
             destroyer(textImage)
+        # Continue if a file has been selected
         if filepath:
+            # Open the image and convert to RGB
             image = Image.open(filepath).convert("RGB")
-            result = pipe(image)  # result is already a PIL.Image
+            # Remove the background of the image using the ai model from the segmentation pipeline
+            result = pipe(image)
+            # Save the image
             output_path = "background_removed.png"
             result.save(output_path)
+            # Display the processed image
             image1 = tk.PhotoImage(file=output_path)
             backRemove = tk.Label(tab1, image=image1)
             backRemove.image = image1

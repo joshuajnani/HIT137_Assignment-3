@@ -1,15 +1,15 @@
-1. Encapsulation
+Encapsulation
 Where: Functions like openFile(), inputSelector(), and AI_Selector().
 Why: Groups related logic (file browsing, widget swapping, AI processing) into reusable blocks, hiding unnecessary details.
 
-2. Polymorphism
-Where: Methods like .pack(), .grid(), .destroy() work across different widgets (Label, Button, Frame).
+Polymorphism
+Where: Methods like .pack() and .destroy() work across different widgets (Label, Button, Frame).
 Why: Same method name, but it adapts based on the widget type.
 
-3. Inheritance
+Inheritance
 Where: ttk widgets (e.g., ttk.Label, ttk.Frame) inherit from base Tkinter classes.
 Why: They reuse functionality from their parent classes but add extra features like styling.
 
-4. Abstraction
+Abstraction
 Where: Hugging Face pipelines (pipe = load_background_remover()) and Tkinter widgets (ttk.Combobox, ttk.Label).
 Why: You don’t see how the AI model or GUI widget works internally — just a simple interface to use them.

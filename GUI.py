@@ -114,25 +114,34 @@ def AI_Selector():
 
     # Text to image generation
     if aiSelect == "Text to Image" and inputType == "Text":
-        # Remove the background remover image if it exists
-        if backRemove is not None and backRemove.winfo_exists():
-            destroyer(backRemove)
-        if errorLabel is not None and errorLabel.winfo_exists():
-            destroyer(errorLabel)
-        # Check if the text input box exists and retrieve the prompt
+        # Clear all widgets from output_frame
+        for widget in output_frame.winfo_children():
+            widget.destroy()
+        # Get prompt from textBox
         if textBox is not None and textBox.winfo_exists():
             prompt = textBox.get("1.0", tk.END).strip()
-            # Continue if the prompt is not empty
             if prompt:
+                # Create a fresh status label
+                statusLabel = tk.Label(output_frame, text="Please Wait, Image is Processing")
+                statusLabel.pack(fill='x', padx=5, pady=5)
+                root.update_idletasks()
+                # generate image
                 generator = TextToImageGenerator()
                 output_path = generator.generate_image(prompt)
-                # Display the generated image if it's not already shown
-                if textImage is None or not textImage.winfo_exists():
-                    image1 = tk.PhotoImage(file=output_path)
-                    textImage = tk.Label(output_frame, image=image1)
-                    textImage.image = image1
-                    textImage.pack()
-    # Image background removal
+                # Remove status message
+                statusLabel.destroy()
+                # Display generated image
+                image1 = tk.PhotoImage(file=output_path)
+                textImage = tk.Label(output_frame, image=image1)
+                textImage.image = image1
+                textImage.pack()
+            else:
+                # Clear output again
+                for widget in output_frame.winfo_children():
+                    widget.destroy()
+                errorLabel = tk.Label(output_frame, text="Please enter a prompt before generating an image.",
+                                    font=("Arial", 10), foreground="red", anchor="w", justify="left")
+                errorLabel.pack(fill='x', padx=5, pady=5)    # Image background removal
     elif aiSelect == "Background Remover" and inputType == "Image":
         # Remove the generated image from text to image, if it exists
         if textImage is not None and textImage.winfo_exists():

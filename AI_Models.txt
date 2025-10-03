@@ -1,0 +1,7 @@
+Text-to-Image Model
+Generates images from written prompts.
+Based on diffusion models like Stable Diffusion from Hugging Face.
+
+Background Remover Model
+Removes backgrounds from uploaded images.
+Uses image segmentation models from Hugging Face.

@@ -7,20 +7,15 @@ from PIL import Image
 from text_to_image import TextToImageGenerator
 # Import background remover loader function
 from background_remover import load_background_remover
-pipe = load_background_remover()
-
-
 # Initialize background remover pipeline
-
+pipe = load_background_remover()
 # Create the main application window
 root = tk.Tk()
 root.title("Basic Tkinter GUI")
-root.geometry("500x1000")
-
+root.geometry("500x800")
 #ttk Styling
 style = ttk.Style()
 style.theme_use("clam") 
-
 #Custom Styles
 style.configure("TLabelFrame", font=("Arial", 11, "bold"), padding=10)
 style.configure("TLabel", font=("Arial", 10))
@@ -33,10 +28,9 @@ Tabs = ttk.Notebook(root)
 
 # TAB1
 tab1 = ttk.Frame(Tabs)
+# Row to keep input section inline
 input_row = ttk.Frame(tab1)
 input_row.pack(fill="x", padx=10, pady=6)
-
-
 
 # Dropdown menu for input type
 label5 = ttk.Label(input_row, text='Choose input type:')
@@ -48,7 +42,6 @@ inputChoice = ['Text', 'Image']
 dropdownChoice = ttk.Combobox(input_row, values=inputChoice)
 dropdownChoice.pack(side='left')
 
-
 # Destroy function to get rid of widgets when swapping
 def destroyer(widget):
     widget.destroy()
@@ -56,18 +49,19 @@ def destroyer(widget):
 # Initiate widget names
 filepath = tk.StringVar(value="No file selected")
 textBox = None
-
-
+file_path = None
 # File selector
 def openFile():
-    global filepath
+    global filepath, file_path
     path = filedialog.askopenfilename()
     if path:
         filepath.set(path)
+    file_path = path
 #File Selection
+#Frame to structure file selection
 file_frame = ttk.LabelFrame(tab1, text="File Selection")
 file_frame.pack(fill='x', padx=10, pady=10)
-
+#Initiate widget names
 file_label = None
 fileButton = None
 
@@ -96,7 +90,7 @@ def inputSelector():
 # Confirm input type button
 button3 = tk.Button(input_row, text="Confirm", command=inputSelector)
 button3.pack(side='left')
-
+# Row to keep AI section inline
 ai_row = ttk.Frame(tab1)
 ai_row.pack(fill="x", padx=10, pady=6)
 
@@ -111,10 +105,10 @@ dropdownAI.pack(side='left')
 backRemove = None
 textImage = None
 image1 = None
-
+errorLabel = None
 # AI processing function
 def AI_Selector():
-    global backRemove, textImage, image1
+    global backRemove, textImage, image1, filepath, file_path, errorLabel
     aiSelect = dropdownAI.get()
     inputType = dropdownChoice.get()
 
@@ -123,6 +117,8 @@ def AI_Selector():
         # Remove the background remover image if it exists
         if backRemove is not None and backRemove.winfo_exists():
             destroyer(backRemove)
+        if errorLabel is not None and errorLabel.winfo_exists():
+            destroyer(errorLabel)
         # Check if the text input box exists and retrieve the prompt
         if textBox is not None and textBox.winfo_exists():
             prompt = textBox.get("1.0", tk.END).strip()
@@ -141,10 +137,12 @@ def AI_Selector():
         # Remove the generated image from text to image, if it exists
         if textImage is not None and textImage.winfo_exists():
             destroyer(textImage)
+        if errorLabel is not None and errorLabel.winfo_exists():
+            destroyer(errorLabel)
         # Continue if a file has been selected
         if filepath:
             # Open the image and convert to RGB
-            image = Image.open(filepath).convert("RGB")
+            image = Image.open(file_path).convert("RGB")
             # Remove the background of the image using the ai model from the segmentation pipeline
             result = pipe(image)
             # Save the image
@@ -155,7 +153,20 @@ def AI_Selector():
             backRemove = tk.Label(output_frame, image=image1)
             backRemove.image = image1
             backRemove.pack()
-
+    elif aiSelect == "Background Remover" and inputType == "Text":
+        if backRemove is not None and backRemove.winfo_exists():
+            destroyer(backRemove)
+        if textImage is not None and textImage.winfo_exists():
+            destroyer(textImage)
+        errorLabel = tk.Label(output_frame, text = "Cannot use Background Remover with Text")
+        errorLabel.pack()
+    elif aiSelect == "Text to Image" and inputType == "Image":
+        if backRemove is not None and backRemove.winfo_exists():
+            destroyer(backRemove)
+        if textImage is not None and textImage.winfo_exists():
+            destroyer(textImage)
+        errorLabel = tk.Label(output_frame, text = "Cannot use Text to Image with Image")
+        errorLabel.pack()
 # Confirm AI choice button
 button = tk.Button(ai_row, text="Confirm", command=AI_Selector)
 button.pack(side='left', pady=20)
@@ -164,8 +175,6 @@ button.pack(side='left', pady=20)
 output_frame = ttk.LabelFrame(tab1, text="Output")
 output_frame.pack(fill='both', expand=True, padx=10, pady=10)
 
-#output_text = tk.Text(output_frame, height=8, font=("Consolas", 10), bg="#f4f6f7")
-#output_text.pack(fill='both', expand=True, padx=5, pady=5)
 # TAB2
 tab2 = ttk.Frame(Tabs)
 with open("OOP.txt", "r") as file:
